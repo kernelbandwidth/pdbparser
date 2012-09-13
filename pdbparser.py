@@ -8,7 +8,7 @@
 
 # <insert MIT License> (c) 2012 James Crooks
 
-class Atom:
+class atom(object):
     '''Fine grained data structure that captures essential information
 from the pdb ATOM and HETATM lines.'''
     def __init__(self, data):
@@ -111,3 +111,53 @@ from the pdb ATOM and HETATM lines.'''
 
     def formatPDBEntry(self):
         print self.key + self.element
+
+class sequence(list):
+    _threeToOneDictionary = {
+            "GLY":"G",
+            "ALA":"A",
+            "VAL":"V",
+            "LEU":"L",
+            "ILE":"I",
+            "MET":"M",
+            "PHE":"F",
+            "TRP":"W",
+            "PRO":"P",
+            "SER":"S",
+            "THR":"T",
+            "CYS":"C",
+            "TYR":"Y",
+            "ASN":"N",
+            "GLN":"Q",
+            "ASP":"D",
+            "GLU":"E",
+            "LYS":"K",
+            "ARG":"R",
+            "HIS":"H"
+            }
+
+    _oneToThreeDictionary = dict([(v,k) for k, v in _threeToOneDictionary.items()])
+
+    @property
+    def oneLetterCode(self):
+        try:
+            return [self._threeToOneDictionary[val] for val in self]
+        except:
+            return self
+
+    @property
+    def threeLetterCode(self):
+        try:
+            return [self._oneToThreeDictionary[val] for val in self]
+        except:
+            return self
+
+    def convertToOneLetterCode(self):
+        for index, residue in enumerate(self):
+            if residue in self._threeToOneDictionary.keys():
+                self[index] = self._threeToOneDictionary[residue]
+
+    def convertToThreeLetterCode(self):
+        for index, residue in enumerate(self):
+            if residue in self._oneToThreeDictionary.keys():
+                self[index] = self._oneToThreeDictionary[residue]
